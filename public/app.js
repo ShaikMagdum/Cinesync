@@ -32,6 +32,7 @@
   const rewindBtn = document.getElementById('rewindBtn');
   const forwardBtn = document.getElementById('forwardBtn');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const exitFsOverlayBtn = document.getElementById('exitFsOverlayBtn');
   const forceSyncBtn = document.getElementById('forceSyncBtn');
   const videoUrlInput = document.getElementById('videoUrlInput');
   const loadUrlBtn = document.getElementById('loadUrlBtn');
@@ -415,6 +416,16 @@
   function applyRoomState(roomId, peers, videoState, hostStatus) {
     isHost = hostStatus;
     syncEngine.setHostMode(isHost);
+
+    // Apply Guest Mode UI restrictions
+    if (!isHost) {
+      document.body.classList.add('guest-mode');
+      // Force back to Chat tab if they somehow had another active
+      const chatTab = document.querySelector('.sidebar-tab[data-tab="chatTab"]');
+      if (chatTab) chatTab.click();
+    } else {
+      document.body.classList.remove('guest-mode');
+    }
 
     // Update Header
     headerRoomBadge.style.display = 'flex';
@@ -887,6 +898,31 @@
       }
     });
 
+    // NEW: On-screen Fullscreen Exit Overlay Button
+    if (exitFsOverlayBtn) {
+      exitFsOverlayBtn.addEventListener('click', () => {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      });
+    }
+
+    // NEW: Double tap video to toggle fullscreen rapidly
+    videoEl.addEventListener('dblclick', () => {
+      const wrapper = document.querySelector('.video-wrapper');
+      const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+
+      if (!isFullscreen) {
+        if (wrapper.requestFullscreen) wrapper.requestFullscreen().catch(() => {});
+        else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      }
+    });
+
     // Load custom URL
     loadUrlBtn.addEventListener('click', () => {
       const url = videoUrlInput.value.trim();
@@ -1130,6 +1166,10 @@
     renderPeerList();
     headerRoomBadge.style.display = 'none';
     window.location.hash = '';
+    
+    // Clear guest mode restrictions when leaving the room
+    document.body.classList.remove('guest-mode');
+    
     showModal(roomModal);
   }
 
