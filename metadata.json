@@ -1,0 +1,6 @@
+{
+  "name": "CineSync - Private Real-Time Movie Dates",
+  "description": "Private, real-time synchronized movie dates with end-to-end encrypted (E2EE) WebRTC chat and frame-accurate playback drift correction.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
