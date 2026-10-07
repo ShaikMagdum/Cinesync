@@ -12,7 +12,6 @@
   <div class="ambient-glow"></div>
 
   <div class="app-container">
-    <!-- Top Navigation Header -->
     <header class="top-header">
       <div class="brand" id="brandBtn">
         <div class="brand-icon">
@@ -42,21 +41,19 @@
       </div>
 
       <div class="header-actions">
+        <!-- These buttons are hidden in Guest Mode -->
         <button class="btn btn-secondary btn-sm" id="gofileModalBtn" title="Direct Gofile Streamer">
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m8 17 4 4 4-4"></path></svg>
           <span class="hide-on-mobile">Streamer</span>
         </button>
-
         <button class="btn btn-secondary btn-sm" id="deployModalBtn" title="How to deploy to Render, Replit, Railway">
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>
           <span class="hide-on-mobile">Deploy</span>
         </button>
-
         <button class="btn btn-secondary btn-sm" id="fingerprintModalBtn" title="Verify Security Fingerprint">
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           <span class="hide-on-mobile">Safety</span>
         </button>
-
         <button class="btn btn-primary btn-sm" id="openRoomModalBtn">
           <span class="hide-on-mobile">Change Room</span>
           <svg class="show-on-mobile-only" style="display:none; width:14px; height:14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
@@ -64,73 +61,72 @@
       </div>
     </header>
 
-    <!-- Main Stage: Theater Column + Interactive Sidebar -->
     <main class="main-stage">
-      <!-- Theater Column (Video Player & Controls) -->
       <section class="theater-column">
         <div class="video-wrapper">
           <div class="video-glow-effect"></div>
           
-          <video id="mainVideo" playsinline preload="metadata" controls>
+          <!-- crossorigin="anonymous" is required to allow WebVTT subtitle fetching -->
+          <video id="mainVideo" playsinline preload="metadata" controls crossorigin="anonymous">
             <p>Your browser does not support the HTML5 video element.</p>
           </video>
 
-          <!-- Floating Emojis Overlay -->
           <div class="floating-reactions-container" id="reactionsContainer"></div>
-
-          <!-- FULLSCREEN LIVE CHAT OVERLAY -->
           <div class="fullscreen-chat-overlay" id="fullscreenChatOverlay"></div>
 
-          <!-- Video Badges: Sync Drift & Host/Guest Status -->
           <div class="video-sync-overlay" id="syncOverlay">
             <div class="sync-dot" id="syncOverlayDot"></div>
             <span id="syncOverlayText">Sync Initializing</span>
           </div>
-
           <div class="video-role-tag role-host" id="videoRoleTag">
             <span>👑 Host Mode</span>
           </div>
+
+          <button class="exit-fs-overlay-btn" id="exitFsOverlayBtn" title="Exit Fullscreen">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path></svg>
+            <span style="font-size: 0.75rem; margin-left: 6px; font-weight: bold;">Exit Fullscreen</span>
+          </button>
         </div>
 
-        <!-- Theater Control & Source Selector Panel -->
         <div class="theater-controls-panel">
-          <!-- Video Source Selector (Host can change, guests see current title) -->
+          <!-- Main Media Source (Hidden in Guest Mode) -->
           <div class="source-selector-bar" id="sourceControlBar">
             <div class="source-input-group">
-              <input type="url" id="videoUrlInput" class="source-input" placeholder="Paste direct MP4/WebM/HLS URL..." />
-              <button class="btn btn-primary btn-sm" id="loadUrlBtn">Load Stream</button>
+              <input type="url" id="videoUrlInput" class="source-input" placeholder="Paste direct MP4/WebM URL..." />
+              <button class="btn btn-primary btn-sm" id="loadUrlBtn">Load Video</button>
             </div>
-
-            <!-- Local file picker for offline movies -->
             <label class="btn btn-secondary btn-sm" style="cursor: pointer;" title="Select same local video file on both computers">
               <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
               <span>Local File</span>
               <input type="file" id="localVideoPicker" accept="video/*" style="display: none;" />
             </label>
-
-            <!-- Quick Presets -->
             <div class="sample-pills">
               <span style="font-size: 0.75rem; color: var(--text-dim);">Films:</span>
-              <button class="sample-btn" data-url="https://proxy.moron-bots.workers.dev/G9EyUX5BxXUtomQdnNN8qke6Oc3sZeJq:aHR0cHM6Ly9zdG9yZS1uYS1waHgtNC5nb2ZpbGUuaW8vZG93bmxvYWQvd2ViLzA1MzI2ZWMyLTQxMDEtNGUxNS1iYzg0LTI3OWMzZTc4NjY0My9TcGlkZXItTWFuJTIwQnJhbmQlMjBOZXclMjBEYXklMjAoMjAyNiklMjAxMDgwcCUyMERTNEslMjBXRUItREwlMjAlNUJUZWx1Z3UlMjAoQUFDMi4wKSU1RCUyMHgyNjQlMjBFU3ViLm1wNA/Spider-Man%20Brand%20New%20Day%20%282026%29%201080p%20DS4K%20WEB-DL%20%5BTelugu%20%28AAC2.0%29%5D%20x264%20ESub.mp4" data-title="Spider-Man Brand New Day (2026) 1080p">🕷️ Spider-Man (Stream)</button>
+              <button class="sample-btn" data-url="https://proxy.moron-bots.workers.dev/G9EyUX5BxXUtomQdnNN8qke6Oc3sZeJq:aHR0cHM6Ly9zdG9yZS1uYS1waHgtNC5nb2ZpbGUuaW8vZG93bmxvYWQvd2ViLzA1MzI2ZWMyLTQxMDEtNGUxNS1iYzg0LTI3OWMzZTc4NjY0My9TcGlkZXItTWFuJTIwQnJhbmQlMjBOZXclMjBEYXklMjAoMjAyNiklMjAxMDgwcCUyMERTNEslMjBXRUItREwlMjAlNUJUZWx1Z3UlMjAoQUFDMi4wKSU1RCUyMHgyNjQlMjBFU3ViLm1wNA/Spider-Man%20Brand%20New%20Day%20%282026%29%201080p%20DS4K%20WEB-DL%20%5BTelugu%20%28AAC2.0%29%5D%20x264%20ESub.mp4" data-title="Spider-Man (Stream)">🕷️ Spidey</button>
               <button class="sample-btn" data-url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" data-title="Big Buck Bunny">🐰 Bunny</button>
-              <button class="sample-btn" data-url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" data-title="Tears of Steel">🚀 Sci-Fi</button>
-              <button class="sample-btn" data-url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" data-title="Sintel">🐉 Sintel</button>
             </div>
           </div>
 
-          <!-- Video Playback & Drift Status Bar -->
+          <!-- NEW: Audio Tracks & Subtitles (Hidden in Guest Mode) -->
+          <div class="media-extras-bar" id="mediaExtrasBar">
+            <div class="source-input-group">
+              <input type="url" id="subUrlInput" class="source-input" placeholder="Paste Subtitle URL (.vtt / .srt)..." />
+              <button class="btn btn-secondary btn-sm" id="loadSubBtn">Set Subs</button>
+            </div>
+            
+            <div class="audio-track-selector" id="audioTrackContainer" style="display:none;" title="Requires Chrome 'enable-experimental-web-platform-features' flag, or Safari.">
+              <select id="audioTrackSelect" class="form-input" style="padding: 8px 12px; font-size: 0.8rem; background: rgba(0,0,0,0.4); border-color: var(--border-subtle);">
+                <option value="">Default Audio</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Playback Controls -->
           <div class="host-playback-bar">
             <div class="playback-buttons">
-              <button class="btn btn-primary btn-sm" id="playPauseBtn">
-                <span id="playPauseIcon">▶ Play</span>
-              </button>
-              <button class="btn btn-secondary btn-sm" id="rewindBtn" title="Rewind 10 seconds">
-                <span>-10s</span>
-              </button>
-              <button class="btn btn-secondary btn-sm" id="forwardBtn" title="Forward 10 seconds">
-                <span>+10s</span>
-              </button>
-              <!-- THIS IS THE BUTTON USERS MUST CLICK TO KEEP CHAT OVERLAY -->
+              <button class="btn btn-primary btn-sm" id="playPauseBtn"><span id="playPauseIcon">▶ Play</span></button>
+              <button class="btn btn-secondary btn-sm" id="rewindBtn" title="Rewind 10 seconds"><span>-10s</span></button>
+              <button class="btn btn-secondary btn-sm" id="forwardBtn" title="Forward 10 seconds"><span>+10s</span></button>
               <button class="btn btn-secondary btn-sm" id="fullscreenBtn" title="Toggle Fullscreen with Chat">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
                 <span>Fullscreen (Chat)</span>
@@ -149,9 +145,8 @@
         </div>
       </section>
 
-      <!-- Sidebar Column: Chat, Room Info, Diagnostics -->
+      <!-- Sidebar -->
       <aside class="sidebar-column">
-        <!-- Navigation Tabs -->
         <nav class="sidebar-tabs">
           <button class="sidebar-tab active" data-tab="chatTab">
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -167,7 +162,6 @@
           </button>
         </nav>
 
-        <!-- Tab 1: E2EE Chat -->
         <div class="tab-content active" id="chatTab">
           <div class="chat-security-banner">
             <div class="badge">
@@ -184,7 +178,6 @@
           </div>
 
           <div class="chat-input-area">
-            <!-- Romantic / Movie Date Emoji Bar -->
             <div class="quick-reactions">
               <button class="reaction-btn" data-emoji="🍿" title="Popcorn">🍿</button>
               <button class="reaction-btn" data-emoji="🍷" title="Wine">🍷</button>
@@ -193,7 +186,6 @@
               <button class="reaction-btn" data-emoji="🥺" title="Aww">🥺</button>
               <button class="reaction-btn" data-emoji="❤️" title="Love">❤️</button>
             </div>
-
             <form class="chat-form" id="chatForm">
               <input type="text" id="chatInput" class="chat-input" placeholder="Type encrypted message..." autocomplete="off" maxlength="500" />
               <button type="submit" class="btn btn-primary btn-sm">
@@ -203,7 +195,6 @@
           </div>
         </div>
 
-        <!-- Tab 2: Room & Peers Details -->
         <div class="tab-content" id="roomTab">
           <div class="room-details-view">
             <div class="card-section">
@@ -212,7 +203,7 @@
                 <span>Private Invite Link</span>
               </div>
               <p style="font-size: 0.75rem; color: var(--text-dim);">
-                The encryption key lives in the URL fragment (<code style="color:#f5d0fe">#key=...</code>). Per RFC 3986, browsers NEVER transmit fragments to the server!
+                The encryption key lives in the URL fragment. Per RFC 3986, browsers NEVER transmit fragments to the server!
               </p>
               <div class="invite-box">
                 <input type="text" id="inviteLinkInput" class="invite-input" readonly />
@@ -222,33 +213,16 @@
 
             <div class="card-section">
               <div class="card-title">
-                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                <span>Security Fingerprint</span>
-              </div>
-              <div class="fingerprint-display">
-                <span class="fingerprint-text" id="fingerprintValue">---- · ---- · ---- · ----</span>
-                <span class="badge-tag badge-p2p">VERIFIED</span>
-              </div>
-            </div>
-
-            <div class="card-section">
-              <div class="card-title">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
                 <span>Connected Date Partners</span>
               </div>
-              <div class="peer-list" id="peerListContainer">
-                <!-- Dynamically populated via textContent DOM bindings -->
-              </div>
+              <div class="peer-list" id="peerListContainer"></div>
             </div>
 
-            <!-- Host Actions Section (Visible to Host only) -->
             <div class="card-section" id="hostManagementSection" style="display: none;">
               <div class="card-title" style="color: var(--accent-gold);">
                 <span>👑 Host Management</span>
               </div>
-              <p style="font-size: 0.75rem; color: var(--text-dim);">
-                Authorized via cryptographically random host token. Cannot be spoofed.
-              </p>
               <div style="display: flex; gap: 8px;">
                 <button class="btn btn-danger btn-sm" id="endRoomBtn" style="flex: 1;">End Movie Room</button>
               </div>
@@ -256,11 +230,10 @@
           </div>
         </div>
 
-        <!-- Tab 3: Diagnostics & Sync Stats -->
         <div class="tab-content" id="diagTab">
           <div class="diagnostics-view">
             <div class="card-section">
-              <div class="card-title"><span>Synchronization Real-Time Engine</span></div>
+              <div class="card-title"><span>Synchronization Engine</span></div>
               <div class="metric-grid">
                 <div class="metric-card">
                   <span class="metric-label">Drift Delta</span>
@@ -270,40 +243,7 @@
                   <span class="metric-label">Sync Lock State</span>
                   <span class="metric-value" id="diagSyncState" style="color: var(--accent-emerald);">LOCKED</span>
                 </div>
-                <div class="metric-card">
-                  <span class="metric-label">Max Allowed Drift</span>
-                  <span class="metric-value">350 ms</span>
-                </div>
-                <div class="metric-card">
-                  <span class="metric-label">Playback Rate</span>
-                  <span class="metric-value" id="diagPlaybackRate">1.00x</span>
-                </div>
               </div>
-            </div>
-
-            <div class="card-section">
-              <div class="card-title"><span>WebRTC Channel Telemetry</span></div>
-              <div class="metric-grid">
-                <div class="metric-card">
-                  <span class="metric-label">Network Transport</span>
-                  <span class="metric-value" id="diagTransport" style="font-size: 0.85rem; color: var(--accent-cyan);">Direct DataChannel</span>
-                </div>
-                <div class="metric-card">
-                  <span class="metric-label">P2P Round Trip (RTT)</span>
-                  <span class="metric-value" id="diagRtt">-- ms</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-section">
-              <div class="card-title"><span>Cryptographic Specifications</span></div>
-              <ul style="font-size: 0.75rem; color: var(--text-muted); list-style-position: inside; display: flex; flex-direction: column; gap: 4px;">
-                <li>Cipher: AES-GCM (RFC 5116)</li>
-                <li>Key Length: 256 bits (32 bytes)</li>
-                <li>Initialization Vector: 96-bit CSPRNG per-message IV</li>
-                <li>Auth Tag: 128-bit integrity check</li>
-                <li>Storage: Ephemeral browser memory only</li>
-              </ul>
             </div>
           </div>
         </div>
@@ -311,38 +251,25 @@
     </main>
   </div>
 
-  <!-- Modal: Room Setup (Create or Join) -->
+  <!-- Setup Modal -->
   <div class="modal-backdrop" id="roomModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h2 class="modal-title">
-          <span>🎬 CineSync Room Setup</span>
-        </h2>
-        <p class="modal-desc">
-          Zero-database private movie theater with End-to-End Encrypted WebRTC chat.
-        </p>
+        <h2 class="modal-title"><span>🎬 CineSync Room Setup</span></h2>
       </div>
-
       <div class="modal-tabs">
         <button class="modal-tab-btn active" id="modalTabCreate">Create New Room</button>
         <button class="modal-tab-btn" id="modalTabJoin">Join Existing Room</button>
       </div>
 
-      <!-- Create Room Form -->
       <form id="createRoomForm" style="display: flex; flex-direction: column; gap: 14px;">
         <div class="form-group">
           <label class="form-label" for="createNickname">Your Nickname</label>
           <input type="text" id="createNickname" class="form-input" placeholder="e.g. Alex (Host)" required maxlength="25" value="Host" />
         </div>
-        <p style="font-size: 0.75rem; color: var(--text-dim);">
-          Generating a room will create a fresh AES-256-GCM encryption key and an authenticated host credential.
-        </p>
-        <button type="submit" class="btn btn-primary" id="submitCreateBtn">
-          <span>Create & Launch Theater</span>
-        </button>
+        <button type="submit" class="btn btn-primary" id="submitCreateBtn"><span>Create Theater</span></button>
       </form>
 
-      <!-- Join Room Form -->
       <form id="joinRoomForm" style="display: none; flex-direction: column; gap: 14px;">
         <div class="form-group">
           <label class="form-label" for="joinNickname">Your Nickname</label>
@@ -350,153 +277,19 @@
         </div>
         <div class="form-group">
           <label class="form-label" for="joinRoomInput">Room ID or Invite URL</label>
-          <input type="text" id="joinRoomInput" class="form-input" placeholder="cs-xxxx or paste full invite URL" required />
+          <input type="text" id="joinRoomInput" class="form-input" required />
         </div>
         <div class="form-group" id="joinKeyGroup" style="display: none;">
           <label class="form-label" for="joinKeyInput">E2EE Decryption Key</label>
-          <input type="text" id="joinKeyInput" class="form-input" placeholder="Base64 URL encryption key" />
+          <input type="text" id="joinKeyInput" class="form-input" />
         </div>
-        <button type="submit" class="btn btn-primary" id="submitJoinBtn">
-          <span>Join Private Movie Date</span>
-        </button>
+        <button type="submit" class="btn btn-primary" id="submitJoinBtn"><span>Join Date</span></button>
       </form>
     </div>
   </div>
 
-  <!-- Modal: Direct Gofile Streamer -->
-  <div class="modal-backdrop hidden" id="gofileModal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h2 class="modal-title">
-          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m8 17 4 4 4-4"></path></svg>
-          <span>Direct Gofile Movie Streamer</span>
-        </h2>
-        <p class="modal-desc">
-          Paste any Gofile link to stream frame-accurately with HTTP 206 byte-range scrubbing.
-        </p>
-      </div>
-
-      <form id="gofileStreamForm" style="display: flex; flex-direction: column; gap: 14px;">
-        <div class="form-group">
-          <label class="form-label" for="gofileUrlInput">Gofile URL (Store link or Worker link)</label>
-          <input type="url" id="gofileUrlInput" class="form-input" placeholder="https://store-*.gofile.io/download/... or worker link" required />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="gofileTokenInput">Account Token (Pre-configured with working access)</label>
-          <input type="text" id="gofileTokenInput" class="form-input" value="G9EyUX5BxXUtomQdnNN8qke6Oc3sZeJq" placeholder="Optional custom Gofile token" />
-        </div>
-
-        <!-- Quick 3-Step Guide -->
-        <div style="background: rgba(0,0,0,0.4); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 12px; font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;">
-          <strong style="color: #fff; display: block; margin-bottom: 4px;">💡 How to get direct Gofile link:</strong>
-          1. Open the file page on <a href="https://gofile.io" target="_blank" rel="noopener" style="color: var(--accent-cyan);">gofile.io</a>.<br/>
-          2. Right-click the blue <strong>"Download"</strong> button and click <strong>"Copy link address"</strong>.<br/>
-          3. Paste it above and click <strong>"Start Synced Stream"</strong>!
-        </div>
-
-        <div style="display: flex; gap: 8px;">
-          <button type="button" class="btn btn-secondary btn-sm" id="gofileLoadSampleBtn" style="flex: 1;">
-            Load Spider-Man Demo
-          </button>
-          <button type="submit" class="btn btn-primary btn-sm" style="flex: 1;">
-            Start Synced Stream
-          </button>
-        </div>
-      </form>
-
-      <button class="btn btn-secondary btn-sm" id="closeGofileModalBtn">Cancel</button>
-    </div>
-  </div>
-
-  <!-- Modal: Deployment Guide -->
-  <div class="modal-backdrop hidden" id="deployModal">
-    <div class="modal-card" style="max-width: 640px; max-height: 90vh; overflow-y: auto;">
-      <div class="modal-header">
-        <h2 class="modal-title">
-          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>
-          <span>Deploy CineSync to Cloud (Free)</span>
-        </h2>
-        <p class="modal-desc">
-          Single Node.js process serving both static frontend and WebSocket signaling. Zero databases needed!
-        </p>
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
-        <!-- Option 1: Render -->
-        <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 8px; border: 1px solid var(--border-subtle);">
-          <strong style="color: #6ee7b7; font-size: 0.9rem;">Option 1: Render.com (Recommended Free)</strong>
-          <ol style="margin-left: 18px; margin-top: 6px; display: flex; flex-direction: column; gap: 3px;">
-            <li>Push this repository to your GitHub account.</li>
-            <li>Go to <a href="https://dashboard.render.com" target="_blank" rel="noopener" style="color:var(--accent-cyan)">dashboard.render.com</a> &gt; Click <strong>New +</strong> &gt; <strong>Web Service</strong>.</li>
-            <li>Select your repository.</li>
-            <li>Build Command: <code style="color:#f5d0fe">npm install</code></li>
-            <li>Start Command: <code style="color:#f5d0fe">node server.js</code></li>
-            <li>Select <strong>Free Plan</strong> &gt; Click <strong>Create Web Service</strong>.</li>
-          </ol>
-        </div>
-
-        <!-- Option 2: Replit -->
-        <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 8px; border: 1px solid var(--border-subtle);">
-          <strong style="color: #93c5fd; font-size: 0.9rem;">Option 2: Replit (Instant 1-Click)</strong>
-          <ol style="margin-left: 18px; margin-top: 6px; display: flex; flex-direction: column; gap: 3px;">
-            <li>Log into <a href="https://replit.com" target="_blank" rel="noopener" style="color:var(--accent-cyan)">replit.com</a> &gt; Click <strong>Create Repl</strong>.</li>
-            <li>Choose <strong>Import from GitHub</strong> or Node.js template.</li>
-            <li>Set Run Command to <code style="color:#f5d0fe">node server.js</code> and press <strong>Run</strong>.</li>
-          </ol>
-        </div>
-
-        <!-- Option 3: Railway -->
-        <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 8px; border: 1px solid var(--border-subtle);">
-          <strong style="color: #fca5a5; font-size: 0.9rem;">Option 3: Railway.app</strong>
-          <ol style="margin-left: 18px; margin-top: 6px; display: flex; flex-direction: column; gap: 3px;">
-            <li>Log into <a href="https://railway.app" target="_blank" rel="noopener" style="color:var(--accent-cyan)">railway.app</a> &gt; <strong>New Project</strong> &gt; <strong>Deploy from GitHub</strong>.</li>
-            <li>Railway automatically runs <code style="color:#f5d0fe">node server.js</code> and generates a public HTTPS URL.</li>
-          </ol>
-        </div>
-      </div>
-
-      <button class="btn btn-secondary btn-sm" id="closeDeployModalBtn">Close Guide</button>
-    </div>
-  </div>
-
-  <!-- Modal: Safety Fingerprint Verification -->
-  <div class="modal-backdrop hidden" id="fingerprintModal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h2 class="modal-title">
-          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          <span>End-to-End Safety Code</span>
-        </h2>
-        <p class="modal-desc">
-          Compare this safety number with your date over audio, video, or in person to verify that nobody is intercepting your movie session.
-        </p>
-      </div>
-
-      <div style="background: rgba(0,0,0,0.5); padding: 18px; border-radius: 12px; text-align: center; border: 1px solid var(--border-subtle);">
-        <div style="font-family: monospace; font-size: 1.4rem; font-weight: 800; color: #f5d0fe; letter-spacing: 2px;" id="modalFingerprintValue">
-          ---- · ---- · ---- · ----
-        </div>
-        <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 8px;">
-          SHA-256 Digest of your shared 256-bit AES-GCM Key
-        </p>
-      </div>
-
-      <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
-        <strong style="color: #fff;">Why CineSync is private:</strong>
-        <p>1. The decryption key is generated in your browser and shared via the URL fragment (<code style="color: #f5d0fe;">#key=...</code>).</p>
-        <p>2. RFC 3986 specifies that fragments are never sent to the web server.</p>
-        <p>3. Messages are encrypted with AES-256-GCM before leaving your device.</p>
-      </div>
-
-      <button class="btn btn-secondary" id="closeFingerprintModalBtn">Got it, looks safe</button>
-    </div>
-  </div>
-
-  <!-- Toast Notification Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Scripts: Crypto -> WebRTC -> Sync -> Main Application -->
   <script src="/crypto.js"></script>
   <script src="/webrtc.js"></script>
   <script src="/sync.js"></script>
