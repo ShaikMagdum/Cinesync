@@ -864,13 +864,26 @@
       }
     });
 
-    // Fullscreen toggle
+    // Fullscreen toggle (Updated to handle Wrapper correctly)
     fullscreenBtn.addEventListener('click', () => {
       const wrapper = document.querySelector('.video-wrapper');
-      if (!document.fullscreenElement) {
-        wrapper.requestFullscreen().catch(() => videoEl.requestFullscreen());
+      const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+
+      if (!isFullscreen) {
+        if (wrapper.requestFullscreen) {
+          wrapper.requestFullscreen().catch(err => console.warn(err));
+        } else if (wrapper.webkitRequestFullscreen) {
+          wrapper.webkitRequestFullscreen();
+        } else if (videoEl.webkitEnterFullscreen) {
+          // iOS Safari fallback (only fullscreens the video natively, stripping chat)
+          videoEl.webkitEnterFullscreen();
+        }
       } else {
-        document.exitFullscreen();
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
       }
     });
 
