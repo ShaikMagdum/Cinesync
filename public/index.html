@@ -42,6 +42,7 @@
       </div>
 
       <div class="header-actions">
+        <!-- These buttons will be hidden in Guest Mode -->
         <button class="btn btn-secondary btn-sm" id="gofileModalBtn" title="Direct Gofile Streamer">
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m8 17 4 4 4-4"></path></svg>
           <span class="hide-on-mobile">Streamer</span>
@@ -90,11 +91,19 @@
           <div class="video-role-tag role-host" id="videoRoleTag">
             <span>👑 Host Mode</span>
           </div>
+
+          <!-- FULLSCREEN EXIT BUTTON (Visible only in Fullscreen Mode) -->
+          <button class="exit-fs-overlay-btn" id="exitFsOverlayBtn" title="Exit Fullscreen">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+            </svg>
+            <span style="font-size: 0.75rem; margin-left: 6px; font-weight: bold;">Exit Fullscreen</span>
+          </button>
         </div>
 
         <!-- Theater Control & Source Selector Panel -->
         <div class="theater-controls-panel">
-          <!-- Video Source Selector (Host can change, guests see current title) -->
+          <!-- Video Source Selector (Hidden in Guest Mode) -->
           <div class="source-selector-bar" id="sourceControlBar">
             <div class="source-input-group">
               <input type="url" id="videoUrlInput" class="source-input" placeholder="Paste direct MP4/WebM/HLS URL..." />
@@ -130,7 +139,6 @@
               <button class="btn btn-secondary btn-sm" id="forwardBtn" title="Forward 10 seconds">
                 <span>+10s</span>
               </button>
-              <!-- THIS IS THE BUTTON USERS MUST CLICK TO KEEP CHAT OVERLAY -->
               <button class="btn btn-secondary btn-sm" id="fullscreenBtn" title="Toggle Fullscreen with Chat">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
                 <span>Fullscreen (Chat)</span>
@@ -157,6 +165,7 @@
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
             <span>Chat</span>
           </button>
+          <!-- Room and Diag tabs are hidden in Guest Mode -->
           <button class="sidebar-tab" data-tab="roomTab">
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             <span>Room</span>
