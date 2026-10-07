@@ -520,8 +520,8 @@
       // 3. If no direct DataChannel open, relay via server (server only sees ciphertext!)
       if (sentCount === 0 && ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({
-          type: 'encrypted-chat-relay',
-          ...payload
+          ...payload,
+          type: 'encrypted-chat-relay' // CRITICAL FIX: Explicit type override applied after spreading payload
         }));
       }
 
