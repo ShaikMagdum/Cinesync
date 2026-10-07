@@ -40,20 +40,66 @@ app.get('/api/health', (req, res) => {
 /**
  * Universal Video Stream Proxy & Range Corrector
  */
-// CORS is crucial for WebVTT Subtitles
+app.get('/api/stream-proxy', async (req, res) => {
+  const targetUrl = req.query.url;
+  if (!targetUrl || typeof targetUrl !== 'string') {
+    return res.status(400).send('Missing "url" query parameter');
+  }
+
+  try {
+    let fetchUrl = targetUrl;
+    const requestHeaders = {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+      'Accept': '*/*'
+    };
+
+    if (req.headers.range) {
+      requestHeaders['Range'] = req.headers.range;
+    }
+
+    const customToken = req.query.token || 'G9EyUX5BxXUtomQdnNN8qke6Oc3sZeJq';
+
+    if (targetUrl.includes('proxy.moron-bots.workers.dev/')) {
+      try {
+        const afterDomain = targetUrl.split('proxy.moron-bots.workers.dev/')[1];
+        const firstSlash = afterDomain.indexOf('/');
+        const tokenAndBase64 = firstSlash !== -1 ? afterDomain.slice(0, firstSlash) : afterDomain;
+        const colonIdx = tokenAndBase64.indexOf(':');
+        if (colonIdx !== -1) {
+          const token = tokenAndBase64.slice(0, colonIdx);
+          const base64Url = tokenAndBase64.slice(colonIdx + 1);
+          const decodedTarget = Buffer.from(base64Url, 'base64').toString('utf8');
+          if (decodedTarget.startsWith('http')) {
+            fetchUrl = decodedTarget;
+            requestHeaders['Cookie'] = `accountToken=${token || customToken}`;
+            requestHeaders['Referer'] = 'https://gofile.io/';
+          }
+        }
+      } catch (err) {
+        console.warn('Could not decode moron-bots target:', err);
+      }
+    } else if (targetUrl.includes('gofile.io')) {
+      requestHeaders['Cookie'] = `accountToken=${customToken}`;
+      requestHeaders['Referer'] = 'https://gofile.io/';
+    }
+
+    const upstreamRes = await fetch(fetchUrl, {
+      method: 'GET',
+      headers: requestHeaders,
+      redirect: 'follow'
+    });
+
+    if (!upstreamRes.ok && upstreamRes.status !== 206) {
+      if (fetchUrl !== targetUrl) {
+        return res.redirect(targetUrl);
+      }
+      return res.status(upstreamRes.status).send(`Upstream error: ${upstreamRes.statusText}`);
+    }
+
+    // CORS is crucial for WebVTT Subtitles
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Range, Content-Type, Accept');
     res.setHeader('Access-Control-Expose-Headers', 'Content-Range, Content-Length, Accept-Ranges');
-    
-    // CRITICAL FIX: Force text/vtt for subtitles, otherwise the browser rejects them
-    let contentType = upstreamRes.headers.get('content-type') || 'video/mp4';
-    if (req.query.type === 'sub' || targetUrl.endsWith('.vtt')) {
-      contentType = 'text/vtt; charset=utf-8';
-    }
-    
-    res.setHeader('Content-Type', contentType);
-    res.setHeader('Accept-Ranges', 'bytes');
-    res.setHeader('Content-Disposition', 'inline');
     
     // Auto-detect Content-Type for subtitles if missing
     let contentType = upstreamRes.headers.get('content-type') || 'video/mp4';
