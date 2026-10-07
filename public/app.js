@@ -521,7 +521,7 @@
       if (sentCount === 0 && ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({
           ...payload,
-          type: 'encrypted-chat-relay' // CRITICAL FIX: Explicit type override applied after spreading payload
+          type: 'encrypted-chat-relay'
         }));
       }
 
@@ -566,6 +566,7 @@
    * DOM Sanitization: Strictly build DOM tree and use .textContent (No innerHTML!)
    */
   function appendChatMessage({ sender, isSelf, isHost, text, timestamp }) {
+    // 1. --- SIDEBAR CHAT LOGIC ---
     const msgDiv = document.createElement('div');
     msgDiv.className = `chat-message ${isSelf ? 'self' : 'peer'}`;
 
@@ -595,6 +596,40 @@
 
     chatMessages.appendChild(msgDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // 2. --- FULLSCREEN VIDEO OVERLAY LOGIC ---
+    const fsOverlay = document.getElementById('fullscreenChatOverlay');
+    if (fsOverlay) {
+      const fsMsg = document.createElement('div');
+      fsMsg.className = 'fs-chat-msg';
+      
+      const fsSender = document.createElement('span');
+      fsSender.className = `fs-chat-sender ${isSelf ? 'self' : (isHost ? 'host' : 'guest')}`;
+      fsSender.textContent = (isHost ? '👑 ' : '') + sender + ': ';
+      
+      const fsText = document.createElement('span');
+      fsText.textContent = text; // SAFE textContent binding
+      
+      fsMsg.appendChild(fsSender);
+      fsMsg.appendChild(fsText);
+      
+      fsOverlay.appendChild(fsMsg);
+      
+      // Prevent overlay from flooding the screen (keep max 5 visible at a time)
+      if (fsOverlay.children.length > 5) {
+        fsOverlay.removeChild(fsOverlay.firstChild);
+      }
+
+      // Auto-hide the message from the video screen after 7 seconds
+      setTimeout(() => {
+        fsMsg.style.opacity = '0';
+        setTimeout(() => {
+          if (fsMsg.parentNode === fsOverlay) {
+            fsOverlay.removeChild(fsMsg);
+          }
+        }, 500); // Wait for CSS opacity transition to finish
+      }, 7000);
+    }
   }
 
   function appendSystemMessage(text) {
