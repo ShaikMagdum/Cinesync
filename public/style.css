@@ -281,6 +281,24 @@ body {
   justify-content: center;
 }
 
+/* Fix for fullscreen wrapper dimensions so it expands properly */
+.video-wrapper:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.video-wrapper:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Video Ambient Lighting Backglow */
 .video-glow-effect {
   position: absolute;
@@ -1020,18 +1038,17 @@ video#mainVideo {
    ========================================================================== */
 .fullscreen-chat-overlay {
   position: absolute;
-  top: 60px; /* Starts just below the Host/Guest badge */
-  right: 20px; /* Aligned to the right side */
-  bottom: 80px; /* Leaves room for video controls at the bottom */
+  top: 60px;
+  right: 20px;
+  bottom: 80px;
   width: 320px;
   max-width: 45%;
-  z-index: 2147483647; /* Maximum possible z-index to stay above video */
+  z-index: 2147483647;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* New messages push up from the bottom */
+  justify-content: flex-end;
   gap: 10px;
-  pointer-events: none; /* Lets you click through to play/pause the video */
-  transform: translateZ(100px); /* CRITICAL: Forces GPU hardware layer above video */
+  pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%);
   mask-image: linear-gradient(to bottom, transparent 0%, black 15%);
 }
@@ -1064,11 +1081,6 @@ video#mainVideo {
 @keyframes slide-in-right {
   from { opacity: 0; transform: translateX(40px); }
   to { opacity: 1; transform: translateX(0); }
-}
-
-/* Hide native fullscreen button to encourage custom button usage */
-video::-webkit-media-controls-fullscreen-button {
-  display: none;
 }
 
 /* ==========================================================================
@@ -1141,7 +1153,6 @@ video::-webkit-media-controls-fullscreen-button {
     left: 14px;
   }
   
-  /* Mobile adjustments for the live chat overlay */
   .fullscreen-chat-overlay {
     right: 10px;
     width: 250px;
