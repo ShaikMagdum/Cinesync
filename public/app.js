@@ -597,7 +597,7 @@
     chatMessages.appendChild(msgDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
-    // 2. --- FULLSCREEN VIDEO OVERLAY LOGIC ---
+    // 2. --- FULLSCREEN VIDEO OVERLAY LOGIC (RIGHT SIDE) ---
     const fsOverlay = document.getElementById('fullscreenChatOverlay');
     if (fsOverlay) {
       const fsMsg = document.createElement('div');
@@ -615,12 +615,12 @@
       
       fsOverlay.appendChild(fsMsg);
       
-      // Prevent overlay from flooding the screen (keep max 5 visible at a time)
-      if (fsOverlay.children.length > 5) {
+      // Prevent overlay from flooding the screen (keep max 8 visible at a time)
+      if (fsOverlay.children.length > 8) {
         fsOverlay.removeChild(fsOverlay.firstChild);
       }
 
-      // Auto-hide the message from the video screen after 7 seconds
+      // Auto-hide the message from the video screen after 12 seconds
       setTimeout(() => {
         fsMsg.style.opacity = '0';
         setTimeout(() => {
@@ -628,7 +628,7 @@
             fsOverlay.removeChild(fsMsg);
           }
         }, 500); // Wait for CSS opacity transition to finish
-      }, 7000);
+      }, 12000); 
     }
   }
 
